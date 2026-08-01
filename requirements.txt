@@ -1,2 +1,4 @@
 websockets==13.1
 certifi==2024.8.30
+aiokafka==0.14.0
+cramjam==2.11.0
