@@ -1,0 +1,2 @@
+websockets==13.1
+certifi==2024.8.30
