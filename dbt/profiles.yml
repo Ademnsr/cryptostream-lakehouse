@@ -1,0 +1,11 @@
+cryptostream:
+  target: dev
+  outputs:
+    dev:
+      type: athena
+      s3_staging_dir: "s3://{{ env_var('S3_BUCKET_NAME') }}/athena-results/"
+      region_name: "{{ env_var('AWS_REGION') }}"
+      work_group: cryptostream-dev
+      database: awsdatacatalog
+      schema: cryptostream
+      threads: 4

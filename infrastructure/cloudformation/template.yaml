@@ -161,58 +161,60 @@ Resources:
     Type: AWS::IAM::User
     Properties:
       UserName: !Sub '${ProjectName}-${EnvironmentName}-dbt-athena'
-      Policies:
-        - PolicyName: DbtAthenaAccess
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - athena:StartQueryExecution
-                  - athena:GetQueryExecution
-                  - athena:GetQueryResults
-                  - athena:StopQueryExecution
-                  - athena:GetWorkGroup
-                Resource: '*'
-              - Effect: Allow
-                Action:
-                  - glue:GetDatabase
-                  - glue:GetDatabases
-                  - glue:GetTable
-                  - glue:GetTables
-                  - glue:GetPartition
-                  - glue:GetPartitions
-                  - glue:BatchGetPartition
-                  - glue:CreateTable
-                  - glue:UpdateTable
-                  - glue:DeleteTable
-                  - glue:BatchCreatePartition
-                  - glue:BatchDeletePartition
-                Resource:
-                  - !Sub 'arn:aws:glue:${AWS::Region}:${AWS::AccountId}:catalog'
-                  - !Sub 'arn:aws:glue:${AWS::Region}:${AWS::AccountId}:database/cryptostream_bronze'
-                  - !Sub 'arn:aws:glue:${AWS::Region}:${AWS::AccountId}:database/cryptostream_silver'
-                  - !Sub 'arn:aws:glue:${AWS::Region}:${AWS::AccountId}:database/cryptostream_gold'
-                  - !Sub 'arn:aws:glue:${AWS::Region}:${AWS::AccountId}:table/cryptostream_bronze/*'
-                  - !Sub 'arn:aws:glue:${AWS::Region}:${AWS::AccountId}:table/cryptostream_silver/*'
-                  - !Sub 'arn:aws:glue:${AWS::Region}:${AWS::AccountId}:table/cryptostream_gold/*'
-              - Effect: Allow
-                Action:
-                  - s3:GetObject
-                Resource: !Sub 'arn:aws:s3:::${DataBucket}/bronze/*'
-              - Effect: Allow
-                Action:
-                  - s3:GetObject
-                  - s3:PutObject
-                  - s3:DeleteObject
-                Resource:
-                  - !Sub 'arn:aws:s3:::${DataBucket}/silver/*'
-                  - !Sub 'arn:aws:s3:::${DataBucket}/gold/*'
-                  - !Sub 'arn:aws:s3:::${DataBucket}/athena-results/*'
-              - Effect: Allow
-                Action:
-                  - s3:ListBucket
-                Resource: !Sub 'arn:aws:s3:::${DataBucket}'
+      ManagedPolicyArns:
+        - !Ref DbtAthenaPolicy
+
+  DbtAthenaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub '${ProjectName}-${EnvironmentName}-dbt-athena-policy'
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - athena:StartQueryExecution
+              - athena:GetQueryExecution
+              - athena:GetQueryResults
+              - athena:StopQueryExecution
+              - athena:GetWorkGroup
+            Resource: '*'
+          - Effect: Allow
+            Action:
+              - glue:GetDatabase
+              - glue:GetDatabases
+              - glue:GetTable
+              - glue:GetTables
+              - glue:GetPartition
+              - glue:GetPartitions
+              - glue:BatchGetPartition
+              - glue:CreateTable
+              - glue:UpdateTable
+              - glue:DeleteTable
+              - glue:BatchCreatePartition
+              - glue:BatchDeletePartition
+            Resource:
+              - !Sub 'arn:aws:glue:${AWS::Region}:${AWS::AccountId}:catalog'
+              - !Sub 'arn:aws:glue:${AWS::Region}:${AWS::AccountId}:database/cryptostream_*'
+              - !Sub 'arn:aws:glue:${AWS::Region}:${AWS::AccountId}:table/cryptostream_*/*'
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource: !Sub 'arn:aws:s3:::${DataBucket}/bronze/*'
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:PutObject
+              - s3:DeleteObject
+            Resource:
+              - !Sub 'arn:aws:s3:::${DataBucket}/silver/*'
+              - !Sub 'arn:aws:s3:::${DataBucket}/gold/*'
+              - !Sub 'arn:aws:s3:::${DataBucket}/athena-results/*'
+          - Effect: Allow
+            Action:
+              - s3:ListBucket
+              - s3:GetBucketLocation
+            Resource: !Sub 'arn:aws:s3:::${DataBucket}'
 
 Outputs:
   BucketName:

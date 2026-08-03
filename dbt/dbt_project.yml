@@ -1,0 +1,25 @@
+name: cryptostream
+version: '1.0.0'
+config-version: 2
+
+profile: cryptostream
+
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+models:
+  cryptostream:
+    staging:
+      +schema: silver
+      +materialized: view
+    intermediate:
+      +schema: silver
+      +materialized: view
+    marts:
+      silver:
+        +schema: silver
+        +materialized: table
+      gold:
+        +schema: gold
+        +materialized: table

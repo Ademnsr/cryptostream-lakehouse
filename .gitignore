@@ -2,3 +2,7 @@
 __pycache__/
 .pytest_cache/
 .env
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/
+dbt/.user.yml

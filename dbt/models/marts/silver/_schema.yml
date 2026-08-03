@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: fct_crypto_trades
+    columns:
+      - name: event_id
+        tests:
+          - not_null
+          - unique
+      - name: product_id
+        tests:
+          - not_null
+      - name: trade_id
+        tests:
+          - not_null
+      - name: maker_side
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['BUY', 'SELL']
+      - name: trade_time
+        tests:
+          - not_null
+      - name: ingested_at
+        tests:
+          - not_null
